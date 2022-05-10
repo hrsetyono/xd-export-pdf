@@ -11,7 +11,6 @@ module.exports = {
         uxp: 'uxp',
         scenegraph: 'scenegraph',
         // pretier: 'pretier'
-
     },
     module: {
         rules: [
