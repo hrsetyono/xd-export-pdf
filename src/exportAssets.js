@@ -6,12 +6,12 @@ const { PDFDocument } = require('pdf-lib');
 // const formats = require("uxp").storage.formats;
 // const PDFDocument = require('pdf-lib').PDFDocument;
 
-module.exports = async function exportAssets(selection, root) {
+module.exports = async function exportAssets(selection) {
   if (selection.items.length <= 0) {
     return;
   }
 
-  //set up file I/O
+  // set up file I/O
   const folder = await localFileSystem.getFolder();
 
   // Order results by coordinate
@@ -22,18 +22,19 @@ module.exports = async function exportAssets(selection, root) {
   });
 
   const files = [];
-  for (var i = 0; i < selection.items.length; i++) {
-    selection.items[i].filename = selection.items[i].name.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.pdf';
+  for (let i = 0; i < selection.items.length; i++) {
+    const filename = selection.items[i].name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    selection.items[i].filename = `${filename}.pdf`;
     const file = await folder.createFile(
       selection.items[i].filename,
-      { overwrite:true }
+      { overwrite: true }
     );
     files.push(file);
   }
 
-  //set up renditions array
+  // set up renditions array
   const renditions = [];
-  for (var k = 0; k<selection.items.length; k++) {
+  for (let k = 0; k < selection.items.length; k++) {
     renditions.push({
       node: selection.items[k],
       outputFile: files[k],
@@ -45,8 +46,8 @@ module.exports = async function exportAssets(selection, root) {
     });
   }
 
-  //use application class to print out assets,
-  //return render result.
+  // use application class to print out assets,
+  // return render result.
   try {
     const results = await application.createRenditions(renditions);
 
@@ -54,7 +55,7 @@ module.exports = async function exportAssets(selection, root) {
       selection.items[0].filename,
       { overwrite: true }
     );
-    
+
     const buffers = [];
     for (const r of results) {
       const buffer = await r.outputFile.read({
@@ -73,15 +74,11 @@ module.exports = async function exportAssets(selection, root) {
       });
     }
 
-    const mergedBuffer = await tempPDF.save(); 
+    const mergedBuffer = await tempPDF.save();
     await mergedPDF.write(mergedBuffer);
-    
-    // TODO: delete the other files
-    // 
 
-    return true;
+    // TODO: delete the other files
   } catch (error) {
     console.log(error);
-    return false;
   }
-}
+};
