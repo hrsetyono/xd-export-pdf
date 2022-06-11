@@ -1,5 +1,5 @@
-const application = require("application");
-const { localFileSystem, formats } = require("uxp").storage;
+const application = require('application');
+const { localFileSystem, formats } = require('uxp').storage;
 const { PDFDocument } = require('pdf-lib');
 
 // const localFileSystem = require("uxp").storage.localFileSystem;
